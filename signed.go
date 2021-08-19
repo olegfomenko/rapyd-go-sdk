@@ -88,7 +88,7 @@ func (s *signer) signRequest(r *http.Request, body []byte) error {
 
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
-	r.Header.Add(AccessKeyHeader, string(s.accessKey))
+	r.Header.Add(AccessKeyHeader, s.accessKeyString())
 	r.Header.Add(SaltHeader, salt)
 	r.Header.Add(TimestampHeader, timestamp)
 	r.Header.Add(ContentTypeHeader, DefaultContentType)
