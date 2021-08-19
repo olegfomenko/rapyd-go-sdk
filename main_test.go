@@ -1,18 +1,24 @@
 package rapyd
 
 import (
+	"fmt"
 	resources2 "github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
+	"strconv"
 	"testing"
+	"time"
 )
 
 const (
-	accessKey = ""
-	secretKey = ""
-	endpoint  = "https://sandboxapi.rapyd.net"
+	endpoint = "https://sandboxapi.rapyd.net"
 )
+
+var accessKey = os.Getenv("ACCESS_KEY")
+var secretKey = os.Getenv("SECRET_KEY")
 
 func TestClient_CreateWallet(t *testing.T) {
 	addr, err := url.Parse(endpoint)
@@ -20,35 +26,33 @@ func TestClient_CreateWallet(t *testing.T) {
 
 	rapyd := NewClient([]byte(accessKey), []byte(secretKey), addr, http.DefaultClient)
 
+	rand.Seed(time.Now().Unix())
+	var randNumber = strconv.Itoa(rand.Int())
+
+	fmt.Println(randNumber)
+
 	_, err = rapyd.CreateWallet(resources2.Wallet{
-		FirstName:   "Oleg",
-		LastName:    "Fomenko",
-		Email:       "127@rapyd.net",
-		Reference:   "127-Oleg-20072021",
-		PhoneNumber: "+14155551117",
-		Type:        resources2.PersonWalletType,
+		FirstName: "Oleg",
+		LastName:  "Fomenko",
+		Email:     randNumber + "oleg@mail.com",
+		Reference: randNumber + "-Oleg",
+		Type:      resources2.PersonWalletType,
 		Contact: resources2.Contact{
-			PhoneNumber: "+14155551117",
-			Email:       "127@rapyd.net",
+			Email:       randNumber + "oleg@mail.com",
 			FirstName:   "Oleg",
 			LastName:    "Fomenko",
 			ContactType: resources2.PersonalContactType,
 			Address: resources2.Address{
 				Name:    "Oleg Fomenko",
-				Line1:   "124 Main Street",
-				Line2:   "",
-				Line3:   "",
+				Line1:   "111 Main Street",
 				City:    "Anytown",
 				State:   "NY",
 				Country: "US",
-				Zip:     "12345",
-				Phone:   "+14155551117",
+				Zip:     "11111",
 			},
-			IdentificationType:   "PA",
-			IdentificationNumber: "1234567891",
-			Birth:                "11/22/2000",
-			Country:              "US",
-			Nationality:          "FR",
+			Birth:       "11/22/2000",
+			Country:     "US",
+			Nationality: "FR",
 		},
 	})
 
@@ -59,11 +63,13 @@ func TestClient_CreateCustomer(t *testing.T) {
 	addr, err := url.Parse(endpoint)
 	assert.NoError(t, err)
 
+	rand.Seed(time.Now().Unix())
+	var randNumber = strconv.Itoa(rand.Int())
+
 	rapyd := NewClient([]byte(accessKey), []byte(secretKey), addr, http.DefaultClient)
 	_, err = rapyd.CreateCustomer(resources2.Customer{
 		Name:  "Oleg Fomenko",
-		Email: "111115@rapyd.net",
-		Phone: "+3800661111115",
+		Email: randNumber + "oleg@mail.com",
 		PaymentMethod: resources2.PaymentMethod{
 			Fields: map[string]interface{}{
 				"proof_of_authorization": false,
