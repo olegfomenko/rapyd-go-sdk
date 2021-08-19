@@ -4,8 +4,8 @@ import "github.com/olegfomenko/rapyd-go-sdk/resources"
 
 const ACHBankPaymentType = "us_ach_bank"
 
-func ACHBank(proofOfAuthorization bool, firstName, lastName, routingNumber, paymentPurpose, accountNumber string) resources.PaymentMethod {
-	return resources.PaymentMethod{
+func ACHBank(proofOfAuthorization bool, firstName, lastName, routingNumber, paymentPurpose, accountNumber string) *resources.PaymentMethod {
+	return &resources.PaymentMethod{
 		Fields: map[string]interface{}{
 			"proof_of_authorization": proofOfAuthorization,
 			"first_name":             firstName,

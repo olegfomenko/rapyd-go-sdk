@@ -7,8 +7,8 @@ const (
 	PayNowPaymentType = "sg_paynow_bank"
 )
 
-func FAST(paymentPurpose string) resources.PaymentMethod {
-	return resources.PaymentMethod{
+func FAST(paymentPurpose string) *resources.PaymentMethod {
+	return &resources.PaymentMethod{
 		Fields: map[string]interface{}{
 			"purpose_of_payment": paymentPurpose,
 		},
@@ -16,8 +16,8 @@ func FAST(paymentPurpose string) resources.PaymentMethod {
 	}
 }
 
-func PayNow(paymentPurpose string) resources.PaymentMethod {
-	return resources.PaymentMethod{
+func PayNow(paymentPurpose string) *resources.PaymentMethod {
+	return &resources.PaymentMethod{
 		Fields: map[string]interface{}{
 			"purpose_of_payment": paymentPurpose,
 		},
