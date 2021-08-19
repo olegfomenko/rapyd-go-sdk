@@ -37,7 +37,7 @@ import "github.com/olegfomenko/rapyd-go-sdk/payments"
 response, err = rapyd.CreatePayment(resources.CreatePayment{
 		Amount:   "100.00",
 		Currency: "USD",
-		PaymentMethod: (payments.ACHBank(true, "Oleg", "Fomenko", "111111111", "111111", "111111"),
+		PaymentMethod: payments.ACHBank(true, "Oleg", "Fomenko", "111111111", "111111", "111111"),
 		EWallets: []resources.EWallet{
 			{
 				Wallet:     "ewallet_",
