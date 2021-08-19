@@ -2,7 +2,7 @@ package rapyd
 
 import (
 	"fmt"
-	resources2 "github.com/olegfomenko/rapyd-go-sdk/resources"
+	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"net/http"
@@ -31,18 +31,18 @@ func TestClient_CreateWallet(t *testing.T) {
 
 	fmt.Println(randNumber)
 
-	_, err = rapyd.CreateWallet(resources2.Wallet{
+	_, err = rapyd.CreateWallet(resources.Wallet{
 		FirstName: "Oleg",
 		LastName:  "Fomenko",
 		Email:     randNumber + "oleg@mail.com",
 		Reference: randNumber + "-Oleg",
-		Type:      resources2.PersonWalletType,
-		Contact: resources2.Contact{
+		Type:      resources.PersonWalletType,
+		Contact: resources.Contact{
 			Email:       randNumber + "oleg@mail.com",
 			FirstName:   "Oleg",
 			LastName:    "Fomenko",
-			ContactType: resources2.PersonalContactType,
-			Address: resources2.Address{
+			ContactType: resources.PersonalContactType,
+			Address: resources.Address{
 				Name:    "Oleg Fomenko",
 				Line1:   "111 Main Street",
 				City:    "Anytown",
@@ -67,10 +67,10 @@ func TestClient_CreateCustomer(t *testing.T) {
 	var randNumber = strconv.Itoa(rand.Int())
 
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
-	_, err = rapyd.CreateCustomer(resources2.Customer{
+	_, err = rapyd.CreateCustomer(resources.Customer{
 		Name:  "Oleg Fomenko",
 		Email: randNumber + "oleg@mail.com",
-		PaymentMethod: resources2.PaymentMethod{
+		PaymentMethod: resources.PaymentMethod{
 			Fields: map[string]interface{}{
 				"proof_of_authorization": false,
 				"routing_number":         "111111111",
@@ -89,10 +89,10 @@ func TestClient_CreatePayment(t *testing.T) {
 	assert.NoError(t, err)
 
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
-	_, err = rapyd.CreatePayment(resources2.CreatePayment{
+	_, err = rapyd.CreatePayment(resources.CreatePayment{
 		Amount:   "100.23",
 		Currency: "USD",
-		PaymentMethod: &resources2.PaymentMethod{
+		PaymentMethod: &resources.PaymentMethod{
 			Fields: map[string]interface{}{
 				"proof_of_authorization": false,
 				"routing_number":         "111111111",
@@ -101,7 +101,7 @@ func TestClient_CreatePayment(t *testing.T) {
 			},
 			Type: "us_ach_bank",
 		},
-		EWallets: []resources2.EWallet{
+		EWallets: []resources.EWallet{
 			{
 				Wallet:     "ewallet_8d3fdd0929856f5a30ec2933f4bd6cf1",
 				Percentage: 100,
