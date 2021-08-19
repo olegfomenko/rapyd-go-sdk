@@ -24,7 +24,7 @@ func TestClient_CreateWallet(t *testing.T) {
 	addr, err := url.Parse(endpoint)
 	assert.NoError(t, err)
 
-	rapyd := NewClient([]byte(accessKey), []byte(secretKey), addr, http.DefaultClient)
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 
 	rand.Seed(time.Now().Unix())
 	var randNumber = strconv.Itoa(rand.Int())
@@ -66,7 +66,7 @@ func TestClient_CreateCustomer(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 	var randNumber = strconv.Itoa(rand.Int())
 
-	rapyd := NewClient([]byte(accessKey), []byte(secretKey), addr, http.DefaultClient)
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 	_, err = rapyd.CreateCustomer(resources2.Customer{
 		Name:  "Oleg Fomenko",
 		Email: randNumber + "oleg@mail.com",
@@ -88,7 +88,7 @@ func TestClient_CreatePayment(t *testing.T) {
 	addr, err := url.Parse(endpoint)
 	assert.NoError(t, err)
 
-	rapyd := NewClient([]byte(accessKey), []byte(secretKey), addr, http.DefaultClient)
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 	_, err = rapyd.CreatePayment(resources2.CreatePayment{
 		Amount:   "100.23",
 		Currency: "USD",

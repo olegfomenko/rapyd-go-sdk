@@ -27,18 +27,16 @@ type Client interface {
 }
 
 type client struct {
+	Signer
 	*http.Client
-	accessKey []byte
-	secretKey []byte
-	url       *url.URL
+	url *url.URL
 }
 
-func NewClient(accessKey []byte, secretKey []byte, url *url.URL, cli *http.Client) Client {
+func NewClient(signer Signer, url *url.URL, cli *http.Client) Client {
 	return &client{
-		Client:    cli,
-		accessKey: accessKey,
-		secretKey: secretKey,
-		url:       url,
+		Signer: signer,
+		Client: cli,
+		url:    url,
 	}
 }
 
