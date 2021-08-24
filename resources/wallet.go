@@ -47,7 +47,5 @@ type Wallet struct {
 }
 
 type WalletResponse struct {
-	Data struct {
-		Id string `json:"id"`
-	} `json:"data"`
+	Data Data `json:"data"`
 }

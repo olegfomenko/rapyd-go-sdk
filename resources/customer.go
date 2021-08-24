@@ -8,7 +8,5 @@ type Customer struct {
 }
 
 type CustomerResponse struct {
-	Data struct {
-		Id string `json:"id"`
-	} `json:"data"`
+	Data Data `json:"data"`
 }

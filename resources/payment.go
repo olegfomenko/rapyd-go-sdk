@@ -1,13 +1,5 @@
 package resources
 
-const (
-	ProofOfAuthorizationField = "proof_of_authorization"
-	RoutingNumberField        = "routing_number"
-	PaymentPurposeField       = "payment_purpose"
-	AccountNumberField        = "account_number"
-	DefaultPaymentType        = "us_ach_bank"
-)
-
 type PaymentMethod struct {
 	Fields map[string]interface{} `json:"fields"`
 	Type   string                 `json:"type"`
@@ -27,7 +19,5 @@ type CreatePayment struct {
 }
 
 type CreatePaymentResponse struct {
-	Data struct {
-		Id string `json:"id"`
-	} `json:"data"`
+	Data Data `json:"data"`
 }
