@@ -3,7 +3,7 @@ package rapyd
 import (
 	"bytes"
 	"encoding/json"
-	resources2 "github.com/olegfomenko/rapyd-go-sdk/resources"
+	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
@@ -17,10 +17,10 @@ const (
 )
 
 type Client interface {
-	CreateCustomer(data resources2.Customer) (*resources2.CustomerResponse, error)
-	CreateWallet(data resources2.Wallet) (*resources2.WalletResponse, error)
-	CreatePayment(data resources2.CreatePayment) (*resources2.CreatePaymentResponse, error)
-	ValidateWebhook(wh resources2.Webhook, path string) bool
+	CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error)
+	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
+	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
+	ValidateWebhook(wh resources.Webhook, path string) bool
 
 	Resolve(path string) string
 	PostSigned(data interface{}, path string) ([]byte, error)
@@ -75,13 +75,13 @@ func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
 	return ioutil.ReadAll(r.Body)
 }
 
-func (c *client) CreateWallet(data resources2.Wallet) (*resources2.WalletResponse, error) {
+func (c *client) CreateWallet(data resources.Wallet) (*resources.WalletResponse, error) {
 	response, err := c.PostSigned(data, createWalletPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending create wallet request")
 	}
 
-	var body resources2.WalletResponse
+	var body resources.WalletResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
@@ -90,13 +90,13 @@ func (c *client) CreateWallet(data resources2.Wallet) (*resources2.WalletRespons
 	return &body, nil
 }
 
-func (c *client) CreateCustomer(data resources2.Customer) (*resources2.CustomerResponse, error) {
+func (c *client) CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error) {
 	response, err := c.PostSigned(data, createCustomerPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending create wallet request")
 	}
 
-	var body resources2.CustomerResponse
+	var body resources.CustomerResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
@@ -106,13 +106,13 @@ func (c *client) CreateCustomer(data resources2.Customer) (*resources2.CustomerR
 	return &body, nil
 }
 
-func (c *client) CreatePayment(data resources2.CreatePayment) (*resources2.CreatePaymentResponse, error) {
+func (c *client) CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error) {
 	response, err := c.PostSigned(data, createPaymentPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending create wallet request")
 	}
 
-	var body resources2.CreatePaymentResponse
+	var body resources.CreatePaymentResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
@@ -122,7 +122,7 @@ func (c *client) CreatePayment(data resources2.CreatePayment) (*resources2.Creat
 	return &body, nil
 }
 
-func (c *client) ValidateWebhook(wh resources2.Webhook, path string) bool {
+func (c *client) ValidateWebhook(wh resources.Webhook, path string) bool {
 	h := wh.Headers
 
 	data := SignatureData{
