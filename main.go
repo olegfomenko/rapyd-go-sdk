@@ -20,7 +20,7 @@ type Client interface {
 	CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error)
 	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
 	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
-	ValidateWebhook(wh resources.Webhook, path string) bool
+	ValidateWebhook(r *http.Request) bool
 
 	Resolve(path string) string
 	PostSigned(data interface{}, path string) ([]byte, error)
@@ -122,15 +122,21 @@ func (c *client) CreatePayment(data resources.CreatePayment) (*resources.CreateP
 	return &body, nil
 }
 
-func (c *client) ValidateWebhook(wh resources.Webhook, path string) bool {
-	h := wh.Headers
+func (c *client) ValidateWebhook(r *http.Request) bool {
+	if webhookBytes, err := ioutil.ReadAll(r.Body); err == nil {
+		if err := r.Body.Close(); err != nil {
+			return false
+		}
+		r.Body = ioutil.NopCloser(bytes.NewBuffer(webhookBytes))
 
-	data := SignatureData{
-		Path:      path,
-		Salt:      h.Get(SaltHeader),
-		Timestamp: h.Get(TimestampHeader),
-		Body:      string(wh.Body),
+		data := SignatureData{
+			Path:      r.RequestURI,
+			Salt:      r.Header.Get(SaltHeader),
+			Timestamp: r.Header.Get(TimestampHeader),
+			Body:      string(webhookBytes),
+		}
+		return string(c.signData(data)) == r.Header.Get(SignatureHeader)
 	}
 
-	return string(c.signData(data)) == h.Get(SignatureHeader)
+	return false
 }
