@@ -1,5 +1,10 @@
 package resources
 
+const (
+	FixedSideSell = "sell"
+	FixedSideBuy  = "buy"
+)
+
 type PaymentMethod struct {
 	Fields map[string]interface{} `json:"fields"`
 	Type   string                 `json:"type"`
