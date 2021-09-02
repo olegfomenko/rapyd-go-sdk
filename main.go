@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -132,7 +133,7 @@ func (c *client) ValidateWebhook(r *http.Request) bool {
 		r.Body = ioutil.NopCloser(bytes.NewBuffer(webhookBytes))
 
 		data := SignatureData{
-			Path:      r.RequestURI,
+			Path:      fmt.Sprintf("https://%s%s", r.Host, r.RequestURI),
 			Salt:      r.Header.Get(SaltHeader),
 			Timestamp: r.Header.Get(TimestampHeader),
 			Body:      string(webhookBytes),
