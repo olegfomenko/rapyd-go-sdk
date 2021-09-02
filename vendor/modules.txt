@@ -1,8 +1,10 @@
 # github.com/davecgh/go-spew v1.1.1
-github.com/davecgh/go-spew/spew
-# github.com/go-openapi/errors v0.20.1
 ## explicit
-github.com/go-openapi/errors
+github.com/davecgh/go-spew/spew
+# github.com/kr/text v0.2.0
+## explicit
+# github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e
+## explicit
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
@@ -11,9 +13,8 @@ github.com/pmezard/go-difflib/difflib
 # github.com/stretchr/testify v1.7.0
 ## explicit
 github.com/stretchr/testify/assert
-# gitlab.com/distributed_lab/figure v2.1.0+incompatible
-## explicit
-# gitlab.com/distributed_lab/kit v1.8.6
+# gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f
 ## explicit
 # gopkg.in/yaml.v3 v3.0.0-20200605160147-a5ece683394c
+## explicit
 gopkg.in/yaml.v3
