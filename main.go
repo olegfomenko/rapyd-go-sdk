@@ -2,6 +2,8 @@ package rapyd
 
 import (
 	"bytes"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/pkg/errors"
@@ -136,7 +138,7 @@ func (c *client) ValidateWebhook(r *http.Request) bool {
 			Body:      string(webhookBytes),
 		}
 
-		generatedSignature := string(c.signData(data))
+		generatedSignature := base64.StdEncoding.EncodeToString([]byte(hex.EncodeToString(c.signData(data))))
 		return generatedSignature == r.Header.Get(SignatureHeader)
 	}
 
