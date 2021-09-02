@@ -28,7 +28,7 @@ func (d Data) GetInt64(key string) int64 {
 
 func (d Data) GetData(key string) map[string]interface{} {
 	if id, ok := d[key]; ok {
-		return id.(Data)
+		return id.(map[string]interface{})
 	} else {
 		return make(map[string]interface{})
 	}
