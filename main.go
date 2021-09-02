@@ -135,7 +135,9 @@ func (c *client) ValidateWebhook(r *http.Request) bool {
 			Timestamp: r.Header.Get(TimestampHeader),
 			Body:      string(webhookBytes),
 		}
-		return string(c.signData(data)) == r.Header.Get(SignatureHeader)
+
+		generatedSignature := string(c.signData(data))
+		return generatedSignature == r.Header.Get(SignatureHeader)
 	}
 
 	return false
