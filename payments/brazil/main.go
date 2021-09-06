@@ -66,6 +66,13 @@ func BanrisulCBBank() *resources.PaymentMethod {
 	}
 }
 
+func BradescoCBBank() *resources.PaymentMethod {
+	return &resources.PaymentMethod{
+		Fields: map[string]interface{}{},
+		Type:   BradescoCBPaymentType,
+	}
+}
+
 func SantanderCBBank() *resources.PaymentMethod {
 	return &resources.PaymentMethod{
 		Fields: map[string]interface{}{},
