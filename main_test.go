@@ -111,3 +111,15 @@ func TestClient_CreatePayment(t *testing.T) {
 
 	assert.NoError(t, err)
 }
+
+func TestClient_GetPaymentMethodFields(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+
+	resp, err := rapyd.GetPaymentMethodFields("br_itau_bank")
+	fmt.Println(resp)
+
+	assert.NoError(t, err)
+}
