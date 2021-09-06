@@ -14,18 +14,21 @@ import (
 )
 
 const (
-	createWalletPath   = "/v1/user"
-	createCustomerPath = "/v1/customers"
-	createPaymentPath  = "/v1/payments"
+	createWalletPath     = "/v1/user"
+	createCustomerPath   = "/v1/customers"
+	createPaymentPath    = "/v1/payments"
+	getPaymentFieldsPath = "/v1/payment_methods/required_fields"
 )
 
 type Client interface {
 	CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error)
 	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
 	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
+	GetPaymentMethodFields(method string) (*resources.PaymentMethodRequiredFieldsResponse, error)
 	ValidateWebhook(r *http.Request) bool
 
 	Resolve(path string) string
+	GetSigned(path string) ([]byte, error)
 	PostSigned(data interface{}, path string) ([]byte, error)
 }
 
@@ -49,6 +52,28 @@ func (c *client) Resolve(path string) string {
 		panic(errors.New("error parsing path"))
 	}
 	return c.url.ResolveReference(endpoint).String()
+}
+
+func (c *client) GetSigned(path string) ([]byte, error) {
+	request, err := http.NewRequest("GET", c.Resolve(path), nil)
+
+	err = c.signRequest(request, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error signing request")
+	}
+
+	r, err := c.Do(request)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending request")
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != http.StatusOK {
+		errorResponse, _ := ioutil.ReadAll(r.Body)
+		return nil, errors.Errorf("error: got status code %d, response %s", r.StatusCode, string(errorResponse))
+	}
+
+	return ioutil.ReadAll(r.Body)
 }
 
 func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
@@ -144,4 +169,20 @@ func (c *client) ValidateWebhook(r *http.Request) bool {
 	}
 
 	return false
+}
+
+func (c *client) GetPaymentMethodFields(method string) (*resources.PaymentMethodRequiredFieldsResponse, error) {
+	response, err := c.GetSigned(getPaymentFieldsPath + "/" + method)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending create wallet request")
+	}
+
+	var body resources.PaymentMethodRequiredFieldsResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
 }

@@ -1,4 +1,4 @@
-package payments
+package philippines
 
 import "github.com/olegfomenko/rapyd-go-sdk/resources"
 
