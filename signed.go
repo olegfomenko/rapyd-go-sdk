@@ -95,7 +95,7 @@ func (s *signer) signRequest(r *http.Request, body []byte) error {
 
 	data := SignatureData{
 		Method:    strings.ToLower(r.Method),
-		Path:      r.URL.Path,
+		Path:      r.URL.RequestURI(),
 		Salt:      salt,
 		Timestamp: timestamp,
 	}

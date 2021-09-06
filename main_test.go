@@ -123,3 +123,15 @@ func TestClient_GetPaymentMethodFields(t *testing.T) {
 
 	assert.NoError(t, err)
 }
+
+func TestClient_GetCountryPaymentMethods(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+
+	resp, err := rapyd.GetCountryPaymentMethods("US")
+	fmt.Println(resp)
+
+	assert.NoError(t, err)
+}
