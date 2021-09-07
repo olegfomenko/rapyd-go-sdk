@@ -25,7 +25,7 @@ type PaymentMethodRequiredFieldsResponse struct {
 type CountryPaymentMethod struct {
 	Type                   string   `json:"type"`
 	Name                   string   `json:"name"`
-	Category               string   `json:"cash"`
+	Category               string   `json:"category"`
 	Image                  string   `json:"image"`
 	Country                string   `json:"country"`
 	PaymentFlowType        string   `json:"payment_flow_type"`

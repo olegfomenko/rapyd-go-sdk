@@ -123,7 +123,7 @@ func (c *client) CreateWallet(data resources.Wallet) (*resources.WalletResponse,
 func (c *client) CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error) {
 	response, err := c.PostSigned(data, createCustomerPath)
 	if err != nil {
-		return nil, errors.Wrap(err, "error sending create wallet request")
+		return nil, errors.Wrap(err, "error sending create customer request")
 	}
 
 	var body resources.CustomerResponse
@@ -139,7 +139,7 @@ func (c *client) CreateCustomer(data resources.Customer) (*resources.CustomerRes
 func (c *client) CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error) {
 	response, err := c.PostSigned(data, createPaymentPath)
 	if err != nil {
-		return nil, errors.Wrap(err, "error sending create wallet request")
+		return nil, errors.Wrap(err, "error sending create payment request")
 	}
 
 	var body resources.CreatePaymentResponse
@@ -176,7 +176,7 @@ func (c *client) ValidateWebhook(r *http.Request) bool {
 func (c *client) GetPaymentMethodFields(method string) (*resources.PaymentMethodRequiredFieldsResponse, error) {
 	response, err := c.GetSigned(getPaymentFieldsPath + method)
 	if err != nil {
-		return nil, errors.Wrap(err, "error sending create wallet request")
+		return nil, errors.Wrap(err, "error getting payment method fields")
 	}
 
 	var body resources.PaymentMethodRequiredFieldsResponse
@@ -192,7 +192,7 @@ func (c *client) GetPaymentMethodFields(method string) (*resources.PaymentMethod
 func (c *client) GetCountryPaymentMethods(country string) (*resources.CountryPaymentMethodsResponse, error) {
 	response, err := c.GetSigned(getPaymentMethodsPath + country)
 	if err != nil {
-		return nil, errors.Wrap(err, "error sending create wallet request")
+		return nil, errors.Wrap(err, "error getting country payment methods")
 	}
 
 	var body resources.CountryPaymentMethodsResponse
