@@ -135,3 +135,38 @@ func TestClient_GetCountryPaymentMethods(t *testing.T) {
 
 	assert.NoError(t, err)
 }
+
+func TestClient_CreateSender(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+
+	rand.Seed(time.Now().Unix())
+	var randNumber = strconv.Itoa(rand.Int())
+
+	fmt.Println(randNumber)
+
+	_, err = rapyd.CreateSender(resources.Sender{
+		FirstName:               "Nikita",
+		LastName:                "Shaburov",
+		DateOfBirth:             "04/16/2001",
+		Country:                 "US",
+		Currency:                "USD",
+		Address:                 "1 Second Street",
+		City:                    "Montreal",
+		State:                   "Quebec",
+		PostCode:                "12345",
+		PhoneNumber:             "0632606012",
+		IdentificationType:      "identification_id",
+		IdentificationValue:     "163",
+		Occupation:              "occ",
+		SourceOfIncome:          "salary",
+		BeneficiaryRelationship: "spouse",
+		PurposeCode:             "salary",
+		EntityType:              "individual",
+	})
+
+	assert.NoError(t, err)
+}
+
