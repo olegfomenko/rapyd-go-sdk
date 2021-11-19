@@ -18,6 +18,7 @@ const (
 	createCustomerPath    = "/v1/customers"
 	createPaymentPath     = "/v1/payments"
 	createSenderPath      = "/v1/payouts/sender"
+	createBeneficiaryPath = "/v1/payouts/beneficiary"
 	getPaymentFieldsPath  = "/v1/payment_methods/required_fields/"
 	getPaymentMethodsPath = "/v1/payment_methods/country?country="
 )
@@ -30,6 +31,7 @@ type Client interface {
 	GetCountryPaymentMethods(country string) (*resources.CountryPaymentMethodsResponse, error)
 
 	CreateSender(data resources.Sender) (*resources.SenderResponse, error)
+	CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error)
 
 	ValidateWebhook(r *http.Request) bool
 
@@ -216,6 +218,22 @@ func (c *client) CreateSender(data resources.Sender) (*resources.SenderResponse,
 	}
 
 	var body resources.SenderResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error) {
+	response, err := c.PostSigned(data, createBeneficiaryPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending create beneficiary request")
+	}
+
+	var body resources.BeneficiaryResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
