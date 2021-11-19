@@ -142,11 +142,6 @@ func TestClient_CreateSender(t *testing.T) {
 
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 
-	rand.Seed(time.Now().Unix())
-	var randNumber = strconv.Itoa(rand.Int())
-
-	fmt.Println(randNumber)
-
 	_, err = rapyd.CreateSender(resources.Sender{
 		FirstName:               "Nikita",
 		LastName:                "Shaburov",
@@ -170,3 +165,27 @@ func TestClient_CreateSender(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestClient_CreateBeneficiary(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+
+	_, err = rapyd.CreateBeneficiary(resources.Beneficiary{
+		Category:            "rapyd_ewallet",
+		Country:             "US",
+		Currency:            "USD",
+		EntityType:          "individual",
+		FirstName:           "Nikita",
+		IdentificationType:  "identification_id",
+		IdentificationValue: "16345",
+		LastName:            "Shaburov",
+		AccountNumber:       "1234567",
+		Address:             "1 Second Street",
+		City:                "Montreal",
+		State:               "Quebec",
+		PostCode:            "12345",
+	})
+
+	assert.NoError(t, err)
+}
