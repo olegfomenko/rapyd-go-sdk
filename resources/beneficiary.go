@@ -12,13 +12,17 @@ type Beneficiary struct {
 	IdentificationValue     string  `json:"identification_value"`
 	LastName                string  `json:"last_name"`
 	AccountNumber           string  `json:"account_number"`
+	PaymentType             string  `json:"payment_type"`
 	Address                 string  `json:"address"`
 	City                    string  `json:"city"`
 	State                   string  `json:"state"`
 	PostCode                string  `json:"post_code"`
 	CardNumber              string  `json:"card_number"`
 	CardExpirationMonth     string  `json:"card_expiration_month"`
-	CardExpirationYear      string `json:"card_expiration_year"`
+	CardExpirationYear      string  `json:"card_expiration_year"`
+	AchCode                 string  `json:"aba"`
+	BankName                string  `json:"bank_name"`
+	BicSwift                string  `json:"bic_swift"`
 }
 
 type BeneficiaryResponse struct {

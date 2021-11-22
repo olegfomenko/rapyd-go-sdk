@@ -1,0 +1,111 @@
+{
+ "data": {
+  "sender_currency": "USD",
+  "sender_country": "*",
+  "sender_entity_type": "individual",
+  "beneficiary_country": "us",
+  "payout_currency": "USD",
+  "beneficiary_entity_type": "individual",
+  "is_cancelable": 1,
+  "is_expirable": 0,
+  "is_location_specific": 0,
+  "is_online": 0,
+  "status": 1,
+  "image": "/checkout/us_general_bank.png",
+  "beneficiary_required_fields": [
+   {
+    "name": "payment_type",
+    "regex": "regular",
+    "type": "string"
+   },
+   {
+    "name": "address",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "city",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "country",
+    "regex": "^[A-z]{2}$",
+    "type": "string"
+   },
+   {
+    "name": "first_name",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "last_name",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "state",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "postcode",
+    "regex": "^.{1,12}$",
+    "type": "string"
+   },
+   {
+    "name": "aba",
+    "regex": "^\\d{9}$",
+    "type": "string"
+   },
+   {
+    "name": "account_number",
+    "regex": "^\\d{1,17}$",
+    "type": "string"
+   }
+  ],
+  "sender_required_fields": [
+   {
+    "name": "country",
+    "regex": "^[A-z]{2}",
+    "type": "string"
+   },
+   {
+    "name": "city",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "address",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "first_name",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "last_name",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "date_of_birth",
+    "regex": "^([0-2][0-9]|(3)[0-1])(/)(((0)[0-9])|((1)[0-2]))(/)((19|20)[0-9][0-9])$",
+    "type": "date",
+    "description": "the date must match the following pattern: dd/mm/yyyy"
+   },
+   {
+    "name": "state",
+    "regex": "^.{1,255}",
+    "type": "string"
+   },
+   {
+    "name": "postcode",
+    "regex": "^.{1,255}",
+    "type": "string"
+   }
+  ]
+ }
+}
