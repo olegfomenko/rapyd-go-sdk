@@ -124,6 +124,31 @@ func TestClient_GetPaymentMethodFields(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestClient_GetPayoutMethods(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+
+	resp, err := rapyd.GetPayoutMethods("USD", "2")
+	fmt.Println(resp)
+
+	assert.NoError(t, err)
+}
+
+//func TestClient_GetPayoutRequiredFields(t *testing.T) {
+//	addr, err := url.Parse(endpoint)
+//	assert.NoError(t, err)
+//
+//	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+//
+//	resp, err := rapyd.GetPayoutRequiredFields("ph_allied_bank", "ph", "company",
+//		"251", "PHP", "ph", "PHP", "company")
+//	fmt.Println(resp)
+//
+//	assert.NoError(t, err)
+//}
+
 func TestClient_GetCountryPaymentMethods(t *testing.T) {
 	addr, err := url.Parse(endpoint)
 	assert.NoError(t, err)
@@ -185,6 +210,59 @@ func TestClient_CreateBeneficiary(t *testing.T) {
 		City:                "Montreal",
 		State:               "Quebec",
 		PostCode:            "12345",
+	})
+
+	assert.NoError(t, err)
+}
+
+func TestClient_CreatePayout(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+
+	_, err = rapyd.CreatePayout(resources.CreatePayout{
+		Beneficiary: resources.Beneficiary{
+			Category:            "rapyd_ewallet",
+			Country:             "US",
+			Currency:            "USD",
+			EntityType:          "individual",
+			FirstName:           "Nikita",
+			IdentificationType:  "identification_id",
+			IdentificationValue: "16345",
+			LastName:            "Shaburov",
+			AccountNumber:       "1234567",
+			Address:             "1 Second Street",
+			City:                "Montreal",
+			State:               "Quebec",
+			PostCode:            "12345",
+		},
+		BeneficiaryEntityType: "individual",
+		PayoutAmount:          110,
+		PayoutCurrency:        "USD",
+		PayoutMethodType:      "us_general_bank",
+		Sender: resources.Sender{
+			FirstName:               "Nikita",
+			LastName:                "Shaburov",
+			DateOfBirth:             "04/16/2001",
+			Country:                 "US",
+			Currency:                "USD",
+			Address:                 "1 Second Street",
+			City:                    "Montreal",
+			State:                   "Quebec",
+			PostCode:                "12345",
+			PhoneNumber:             "0632606012",
+			IdentificationType:      "identification_id",
+			IdentificationValue:     "163",
+			Occupation:              "occ",
+			SourceOfIncome:          "salary",
+			BeneficiaryRelationship: "spouse",
+			PurposeCode:             "salary",
+			EntityType:              "individual",
+		},
+		SenderCountry:    "US",
+		SenderCurrency:   "USD",
+		SenderEntityType: "individual",
 	})
 
 	assert.NoError(t, err)

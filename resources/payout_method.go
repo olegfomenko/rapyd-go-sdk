@@ -1,29 +1,30 @@
 package resources
 
-type PayoutRequiredFields struct {
-	SenderCurrency            string                 `json:"sender_currency"`
-	SenderCountry             string                 `json:"sender_country"`
-	SenderEntityType          string                 `json:"sender_entity_type"`
-	BeneficiaryCountry        string                 `json:"beneficiary_country"`
-	PayoutCurrency            string                 `json:"payout_currency"`
-	BeneficiaryEntityType     string                 `json:"beneficiary_entity_type"`
-	IsCancelable              bool                   `json:"is_cancelable"`
-	IsLocationSpecific        bool                   `json:"is_location_specific"`
-	IsExpirable               bool                   `json:"is_expirable"`
-	IsOnline                  bool                   `json:"is_online"`
-	Image                     string                 `json:"image"`
-	Status                    bool                   `json:"status"`
-	BeneficiaryRequiredFields BeneficiarySenderField `json:"beneficiary_required_fields"`
-	SenderRequiredFields      BeneficiarySenderField `json:"sender_required_fields"`
+type PayoutMethod struct {
+	PayoutMethodType       string                   `json:"payout_method_type"`
+	Name                   string                   `json:"name"`
+	IsCancelable           int                     `json:"is_cancelable"`
+	IsExpirable            int                     `json:"is_expirable"`
+	IsLocationSpecific     int                     `json:"is_location_specific"`
+	Status                 int                      `json:"status"`
+	Image                  string                   `json:"image"`
+	Category               string                   `json:"category"`
+	BeneficiaryCountry     string                   `json:"beneficiary_country"`
+	PayoutCurrencies       []string                 `json:"payout_currencies"`
+	SenderEntityTypes      []string                 `json:"sender_entity_types"`
+	BeneficiaryEntityTypes []string                 `json:"beneficiary_entity_types"`
+	AmountRangePerCurrency []AmountRangePerCurrency `json:"amount_range_per_currency"`
+	MinExpirationSeconds   int64                    `json:"minimum_expiration_seconds"`
+	MaxExpirationSeconds   int64                    `json:"maximum_expiration_seconds"`
+	SenderCurrencies       []string                 `json:"sender_currencies"`
 }
 
-type BeneficiarySenderField struct {
-	Name        string `json:"name"`
-	Type        string `json:"type"`
-	Regex       string `json:"regex"`
-	Description string `json:"description"`
+type AmountRangePerCurrency struct {
+	MaximumAmount  int    `json:"maximum_amount"`
+	MinimumAmount  int    `json:"minimum_amount"`
+	PayoutCurrency string `json:"payout_currency"`
 }
 
-type PayoutRequiredFieldsResponse struct {
-	Data PayoutRequiredFields `json:"data"`
+type PayoutMethodsResponse struct {
+	Data []PayoutMethod `json:"data"`
 }
