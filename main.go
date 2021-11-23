@@ -220,7 +220,7 @@ func (c *client) GetCountryPaymentMethods(country string) (*resources.CountryPay
 }
 
 func (c *client) GetPayoutMethods(payoutCurrency, limit string) (*resources.PayoutMethodsResponse, error) {
-	reqPath := getPayoutMethodsPath+fmt.Sprintf("payout_currency=%s&limit=%s", payoutCurrency, limit)
+	reqPath := fmt.Sprintf(getPayoutMethodsPath+"payout_currency=%s&limit=%s", payoutCurrency, limit)
 	response, err := c.GetSigned(reqPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting payout methods list")
@@ -271,7 +271,7 @@ func (c *client) CreateBeneficiary(data resources.Beneficiary) (*resources.Benef
 func (c *client) GetPayoutRequiredFields(method, beneficiaryCountry, beneficiaryEntityType, payoutAmount,
 	payoutCurrency, senderCountry, senderCurrency, senderEntityType string) (*resources.PayoutRequiredFieldsResponse, error) {
 
-	reqPath := getPayoutFieldsPath + method + "/" + fmt.Sprintf("details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s", beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
+	reqPath := fmt.Sprintf(getPayoutFieldsPath + method + "/" + "details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s", beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
 
 	response, err := c.GetSigned(reqPath)
 	if err != nil {
