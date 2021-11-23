@@ -1,11 +1,9 @@
 package rapyd
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -144,11 +142,11 @@ func TestClient_GetPayoutRequiredFields(t *testing.T) {
 
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 
-	resp, err := rapyd.GetPayoutRequiredFields("us_general_bank", "us", "individual",
-		"251", "USD", "us", "USD", "individual")
-	file, _ := json.MarshalIndent(resp, "", " ")
+	resp, err := rapyd.GetPayoutRequiredFields("ca_general_bank", "ca", "individual",
+		"251", "USD", "ca", "USD", "individual")
 
-	_ = ioutil.WriteFile("test.json", file, 0644)
+	fmt.Println(resp)
+
 	assert.NoError(t, err)
 }
 
@@ -225,7 +223,45 @@ func TestClient_CreatePayout(t *testing.T) {
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 
 	_, err = rapyd.CreatePayout(resources.CreatePayout{
-		Beneficiary: resources.Beneficiary{},
+		Beneficiary: resources.Beneficiary{
+			Category: "bank",
+			Country: "CA",
+			Currency: "USD",
+			EntityType: "individual",
+			FirstName: "John",
+			LastName: "Doe",
+			IdentificationType: "identification_id",
+			IdentificationValue: "123456789",
+			PaymentType: "priority",
+			Address: "1 Main Street",
+			City: "Montreal",
+			State: "Quebec",
+			PostCode: "12345",
+			AccountNumber: "1234567",
+			BicSwift: "12345678XXX",
+		},
+		BeneficiaryCountry: "CA",
+		BeneficiaryEntityType: "individual",
+		PayoutAmount: "110",
+		PayoutCurrency: "USD",
+		PayoutMethodType: "ca_general_bank",
+		Sender: resources.Sender{
+			Country: "CA",
+			Currency: "USD",
+			EntityType: "individual",
+			FirstName: "Jane",
+			LastName: "Smith",
+			IdentificationType: "identification_id",
+			IdentificationValue: "987654321",
+			DateOfBirth: "12/12/2000",
+			Address: "1 Second Street",
+			City: "Montreal",
+			State: "Quebec",
+			PostCode: "12345",
+		},
+		SenderCountry: "CA",
+		SenderCurrency: "USD",
+		SenderEntityType: "individual",
 	})
 
 	assert.NoError(t, err)

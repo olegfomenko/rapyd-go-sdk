@@ -16,7 +16,7 @@ type Beneficiary struct {
 	Address                 string  `json:"address"`
 	City                    string  `json:"city"`
 	State                   string  `json:"state"`
-	PostCode                string  `json:"post_code"`
+	PostCode                string  `json:"postcode"`
 	CardNumber              string  `json:"card_number"`
 	CardExpirationMonth     string  `json:"card_expiration_month"`
 	CardExpirationYear      string  `json:"card_expiration_year"`

@@ -16,7 +16,7 @@ type Sender struct {
 	Address                 string  `json:"address"`
 	City                    string  `json:"city"`
 	State                   string  `json:"state"`
-	PostCode                string  `json:"post_code"`
+	PostCode                string  `json:"postcode"`
 	PurposeCode             string  `json:"purpose_code"`
 	BeneficiaryRelationship string  `json:"beneficiary_relationship"`
 }

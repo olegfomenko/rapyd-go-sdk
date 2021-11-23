@@ -8,7 +8,7 @@ type CreatePayout struct {
 	Description           *string     `json:"description,omitempty"`
 	Expiration            *string     `json:"expiration,omitempty"`
 	EWallet               string      `json:"ewallet,omitempty"`
-	PayoutAmount          float64     `json:"payout_amount"`
+	PayoutAmount          string     `json:"payout_amount"`
 	PayoutCurrency        string      `json:"payout_currency"`
 	PayoutMethodType      string      `json:"payout_method_type"`
 	Sender                Sender      `json:"sender"`
