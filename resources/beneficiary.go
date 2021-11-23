@@ -23,6 +23,7 @@ type Beneficiary struct {
 	AchCode                 string  `json:"aba"`
 	BankName                string  `json:"bank_name"`
 	BicSwift                string  `json:"bic_swift"`
+	Iban                    string  `json:"iban"`
 }
 
 type BeneficiaryResponse struct {
