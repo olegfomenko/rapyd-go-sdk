@@ -224,44 +224,102 @@ func TestClient_CreatePayout(t *testing.T) {
 
 	_, err = rapyd.CreatePayout(resources.CreatePayout{
 		Beneficiary: resources.Beneficiary{
-			Category: "bank",
-			Country: "CA",
-			Currency: "USD",
-			EntityType: "individual",
-			FirstName: "John",
-			LastName: "Doe",
-			IdentificationType: "identification_id",
+			Category:            "bank",
+			Country:             "CA",
+			Currency:            "USD",
+			EntityType:          "individual",
+			FirstName:           "John",
+			LastName:            "Doe",
+			IdentificationType:  "identification_id",
 			IdentificationValue: "123456789",
-			PaymentType: "priority",
-			Address: "1 Main Street",
-			City: "Montreal",
-			State: "Quebec",
-			PostCode: "12345",
-			AccountNumber: "1234567",
-			BicSwift: "12345678XXX",
+			PaymentType:         "priority",
+			Address:             "1 Main Street",
+			City:                "Montreal",
+			State:               "Quebec",
+			PostCode:            "12345",
+			AccountNumber:       "1234567",
+			BicSwift:            "12345678XXX",
 		},
-		BeneficiaryCountry: "CA",
+		BeneficiaryCountry:    "CA",
 		BeneficiaryEntityType: "individual",
-		PayoutAmount: "110",
-		PayoutCurrency: "USD",
-		PayoutMethodType: "ca_general_bank",
+		PayoutAmount:          "110",
+		PayoutCurrency:        "USD",
+		PayoutMethodType:      "ca_general_bank",
 		Sender: resources.Sender{
-			Country: "CA",
-			Currency: "USD",
-			EntityType: "individual",
-			FirstName: "Jane",
-			LastName: "Smith",
-			IdentificationType: "identification_id",
+			Country:             "CA",
+			Currency:            "USD",
+			EntityType:          "individual",
+			FirstName:           "Jane",
+			LastName:            "Smith",
+			IdentificationType:  "identification_id",
 			IdentificationValue: "987654321",
-			DateOfBirth: "12/12/2000",
-			Address: "1 Second Street",
-			City: "Montreal",
-			State: "Quebec",
-			PostCode: "12345",
+			DateOfBirth:         "12/12/2000",
+			Address:             "1 Second Street",
+			City:                "Montreal",
+			State:               "Quebec",
+			PostCode:            "12345",
 		},
-		SenderCountry: "CA",
-		SenderCurrency: "USD",
+		SenderCountry:    "CA",
+		SenderCurrency:   "USD",
 		SenderEntityType: "individual",
+	})
+
+	assert.NoError(t, err)
+}
+
+func TestClient_CreatePayout2(t *testing.T) {
+	addr, err := url.Parse(endpoint)
+	assert.NoError(t, err)
+
+	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
+	beneficiary, err := rapyd.CreateBeneficiary(
+		resources.Beneficiary{
+			Category:            "bank",
+			Country:             "CA",
+			Currency:            "USD",
+			EntityType:          "individual",
+			FirstName:           "John",
+			LastName:            "Doe",
+			IdentificationType:  "identification_id",
+			IdentificationValue: "123456789",
+			PaymentType:         "priority",
+			Address:             "1 Main Street",
+			City:                "Montreal",
+			State:               "Quebec",
+			PostCode:            "12345",
+			AccountNumber:       "1234567",
+			BicSwift:            "12345678XXX",
+		})
+	assert.NoError(t, err)
+
+	sender, err := rapyd.CreateSender(
+		resources.Sender{
+			Country:             "CA",
+			Currency:            "USD",
+			EntityType:          "individual",
+			FirstName:           "Jane",
+			LastName:            "Smith",
+			IdentificationType:  "identification_id",
+			IdentificationValue: "987654321",
+			DateOfBirth:         "12/12/2000",
+			Address:             "1 Second Street",
+			City:                "Montreal",
+			State:               "Quebec",
+			PostCode:            "12345",
+		})
+	assert.NoError(t, err)
+
+	_, err = rapyd.CreatePayout(resources.CreatePayout{
+		Beneficiary:           beneficiary.Data.GetId(),
+		BeneficiaryCountry:    "CA",
+		BeneficiaryEntityType: "individual",
+		PayoutAmount:          "110",
+		PayoutCurrency:        "USD",
+		PayoutMethodType:      "ca_general_bank",
+		Sender:                sender.Data.GetId(),
+		SenderCountry:         "CA",
+		SenderCurrency:        "USD",
+		SenderEntityType:      "individual",
 	})
 
 	assert.NoError(t, err)
