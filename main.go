@@ -17,8 +17,13 @@ const (
 	createWalletPath      = "/v1/user"
 	createCustomerPath    = "/v1/customers"
 	createPaymentPath     = "/v1/payments"
+	createSenderPath      = "/v1/payouts/sender"
+	createPayoutPath      = "/v1/payouts"
+	createBeneficiaryPath = "/v1/payouts/beneficiary"
 	getPaymentFieldsPath  = "/v1/payment_methods/required_fields/"
 	getPaymentMethodsPath = "/v1/payment_methods/country?country="
+	getPayoutMethodsPath  = "v1/payouts/supported_types?"
+	getPayoutFieldsPath   = "/v1/payouts/"
 )
 
 type Client interface {
@@ -27,6 +32,15 @@ type Client interface {
 	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
 	GetPaymentMethodFields(method string) (*resources.PaymentMethodRequiredFieldsResponse, error)
 	GetCountryPaymentMethods(country string) (*resources.CountryPaymentMethodsResponse, error)
+
+	CreateSender(data resources.Sender) (*resources.SenderResponse, error)
+	CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error)
+
+	CreatePayout(data resources.CreatePayout) (*resources.CreatePayoutResponse, error)
+	GetPayoutMethods(category, beneficiaryCountry string) (*resources.PayoutMethodsResponse, error)
+	GetPayoutRequiredFields(method, beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency,
+		senderCountry, senderCurrency, senderEntityType string) (*resources.PayoutRequiredFieldsResponse, error)
+
 	ValidateWebhook(r *http.Request) bool
 
 	Resolve(path string) string
@@ -196,6 +210,91 @@ func (c *client) GetCountryPaymentMethods(country string) (*resources.CountryPay
 	}
 
 	var body resources.CountryPaymentMethodsResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) GetPayoutMethods(category, beneficiaryCountry string) (*resources.PayoutMethodsResponse, error) {
+	reqPath := fmt.Sprintf("%scategory=%s&beneficiary_country=%s", getPayoutMethodsPath, category, beneficiaryCountry)
+	response, err := c.GetSigned(reqPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting payout methods list")
+	}
+
+	var body resources.PayoutMethodsResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) CreateSender(data resources.Sender) (*resources.SenderResponse, error) {
+	response, err := c.PostSigned(data, createSenderPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending create sender request")
+	}
+
+	var body resources.SenderResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error) {
+	response, err := c.PostSigned(data, createBeneficiaryPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending create beneficiary request")
+	}
+
+	var body resources.BeneficiaryResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) GetPayoutRequiredFields(method, beneficiaryCountry, beneficiaryEntityType, payoutAmount,
+	payoutCurrency, senderCountry, senderCurrency, senderEntityType string) (*resources.PayoutRequiredFieldsResponse, error) {
+
+	reqPath := fmt.Sprintf("%s%s/details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s",getPayoutFieldsPath,method, beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
+
+	response, err := c.GetSigned(reqPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting payment method fields")
+	}
+
+	var body resources.PayoutRequiredFieldsResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) CreatePayout(data resources.CreatePayout) (*resources.CreatePayoutResponse, error) {
+	response, err := c.PostSigned(data, createPayoutPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending create beneficiary request")
+	}
+
+	var body resources.CreatePayoutResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
