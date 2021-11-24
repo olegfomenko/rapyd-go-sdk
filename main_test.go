@@ -130,7 +130,7 @@ func TestClient_GetPayoutMethods(t *testing.T) {
 
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 
-	resp, err := rapyd.GetPayoutMethods("USD", "2")
+	resp, err := rapyd.GetPayoutMethods("bank", "US")
 	fmt.Println(resp)
 
 	assert.NoError(t, err)
@@ -142,8 +142,8 @@ func TestClient_GetPayoutRequiredFields(t *testing.T) {
 
 	rapyd := NewClient(NewRapydSigner([]byte(accessKey), []byte(secretKey)), addr, http.DefaultClient)
 
-	resp, err := rapyd.GetPayoutRequiredFields("ca_general_bank", "ca", "individual",
-		"251", "USD", "ca", "USD", "individual")
+	resp, err := rapyd.GetPayoutRequiredFields("us_general_bank", "us", "individual",
+		"251", "USD", "us", "USD", "individual")
 
 	fmt.Println(resp)
 

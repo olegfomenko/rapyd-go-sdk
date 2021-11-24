@@ -37,7 +37,7 @@ type Client interface {
 	CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error)
 
 	CreatePayout(data resources.CreatePayout) (*resources.CreatePayoutResponse, error)
-	GetPayoutMethods(payoutCurrency, limit string) (*resources.PayoutMethodsResponse, error)
+	GetPayoutMethods(category, beneficiaryCountry string) (*resources.PayoutMethodsResponse, error)
 	GetPayoutRequiredFields(method, beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency,
 		senderCountry, senderCurrency, senderEntityType string) (*resources.PayoutRequiredFieldsResponse, error)
 
@@ -219,8 +219,8 @@ func (c *client) GetCountryPaymentMethods(country string) (*resources.CountryPay
 	return &body, nil
 }
 
-func (c *client) GetPayoutMethods(payoutCurrency, limit string) (*resources.PayoutMethodsResponse, error) {
-	reqPath := fmt.Sprintf(getPayoutMethodsPath+"payout_currency=%s&limit=%s", payoutCurrency, limit)
+func (c *client) GetPayoutMethods(category, beneficiaryCountry string) (*resources.PayoutMethodsResponse, error) {
+	reqPath := fmt.Sprintf("%scategory=%s&beneficiary_country=%s", getPayoutMethodsPath, category, beneficiaryCountry)
 	response, err := c.GetSigned(reqPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting payout methods list")
@@ -271,7 +271,7 @@ func (c *client) CreateBeneficiary(data resources.Beneficiary) (*resources.Benef
 func (c *client) GetPayoutRequiredFields(method, beneficiaryCountry, beneficiaryEntityType, payoutAmount,
 	payoutCurrency, senderCountry, senderCurrency, senderEntityType string) (*resources.PayoutRequiredFieldsResponse, error) {
 
-	reqPath := fmt.Sprintf(getPayoutFieldsPath + method + "/" + "details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s", beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
+	reqPath := fmt.Sprintf("%s%s/details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s",getPayoutFieldsPath,method, beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
 
 	response, err := c.GetSigned(reqPath)
 	if err != nil {
