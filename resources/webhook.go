@@ -5,6 +5,8 @@ type WebhookType string
 const (
 	PaymentCompletedWebhook WebhookType = "PAYMENT_COMPLETED"
 	PaymentFailedWebhook    WebhookType = "PAYMENT_FAILED"
+	PayoutCompletedWebhook  WebhookType = "PAYOUT_COMPLETED"
+	PayoutFailedWebhook     WebhookType = "PAYOUT_FAILED"
 )
 
 type Webhook struct {
