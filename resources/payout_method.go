@@ -1,5 +1,10 @@
 package resources
 
+const (
+	Category = "bank"
+	PayoutCurrency = "USD"
+)
+
 type PayoutMethod struct {
 	PayoutMethodType       string                   `json:"payout_method_type"`
 	Name                   string                   `json:"name"`

@@ -219,8 +219,9 @@ func (c *client) GetCountryPaymentMethods(country string) (*resources.CountryPay
 	return &body, nil
 }
 
-func (c *client) GetPayoutMethods(category, beneficiaryCountry string) (*resources.PayoutMethodsResponse, error) {
-	reqPath := fmt.Sprintf("%scategory=%s&beneficiary_country=%s", getPayoutMethodsPath, category, beneficiaryCountry)
+func (c *client) GetPayoutMethods(beneficiaryCountry string) (*resources.PayoutMethodsResponse, error) {
+	reqPath := fmt.Sprintf("%scategory=%s&beneficiary_country=%s&payout_currency=%s", getPayoutMethodsPath, resources.Category,
+		beneficiaryCountry, resources.PayoutCurrency)
 	response, err := c.GetSigned(reqPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting payout methods list")
