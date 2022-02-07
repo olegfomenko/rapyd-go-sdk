@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/olegfomenko/go/support/log"
 	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -59,7 +58,7 @@ func (c *client) Resolve(path string) string {
 
 func (c *client) GetSigned(path string) ([]byte, error) {
 	path = c.Resolve(path)
-	log.Debug("Sending GET request on ", path)
+	fmt.Println("Sending GET request on ", path)
 
 	request, err := http.NewRequest("GET", path, nil)
 
@@ -80,7 +79,7 @@ func (c *client) GetSigned(path string) ([]byte, error) {
 	}
 
 	resp, err := ioutil.ReadAll(r.Body)
-	log.Debug("Got response ", string(resp))
+	fmt.Println("Got response ", string(resp))
 
 	return resp, err
 }
@@ -92,7 +91,7 @@ func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
 	}
 
 	path = c.Resolve(path)
-	log.Debug("Sending POST request on ", path, " ", string(body))
+	fmt.Println("Sending POST request on ", path, " ", string(body))
 
 	request, err := http.NewRequest("POST", path, bytes.NewBuffer(body))
 
@@ -113,7 +112,7 @@ func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
 	}
 
 	resp, err := ioutil.ReadAll(r.Body)
-	log.Debug("Got response ", string(resp))
+	fmt.Println("Got response ", string(resp))
 
 	return resp, err
 }
