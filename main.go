@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/olegfomenko/go/support/log"
 	"github.com/olegfomenko/rapyd-go-sdk/resources"
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -57,7 +58,10 @@ func (c *client) Resolve(path string) string {
 }
 
 func (c *client) GetSigned(path string) ([]byte, error) {
-	request, err := http.NewRequest("GET", c.Resolve(path), nil)
+	path = c.Resolve(path)
+	log.Debug("Sending GET request on ", path)
+
+	request, err := http.NewRequest("GET", path, nil)
 
 	err = c.signRequest(request, nil)
 	if err != nil {
@@ -75,7 +79,10 @@ func (c *client) GetSigned(path string) ([]byte, error) {
 		return nil, errors.Errorf("error: got status code %d, response %s", r.StatusCode, string(errorResponse))
 	}
 
-	return ioutil.ReadAll(r.Body)
+	resp, err := ioutil.ReadAll(r.Body)
+	log.Debug("Got response ", string(resp))
+
+	return resp, err
 }
 
 func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
@@ -84,7 +91,10 @@ func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
 		return nil, errors.Wrap(err, "error marshalling data")
 	}
 
-	request, err := http.NewRequest("POST", c.Resolve(path), bytes.NewBuffer(body))
+	path = c.Resolve(path)
+	log.Debug("Sending POST request on ", path, " ", string(body))
+
+	request, err := http.NewRequest("POST", path, bytes.NewBuffer(body))
 
 	err = c.signRequest(request, body)
 	if err != nil {
@@ -102,7 +112,10 @@ func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
 		return nil, errors.Errorf("error: got status code %d, response %s", r.StatusCode, string(errorResponse))
 	}
 
-	return ioutil.ReadAll(r.Body)
+	resp, err := ioutil.ReadAll(r.Body)
+	log.Debug("Got response ", string(resp))
+
+	return resp, err
 }
 
 func (c *client) CreateWallet(data resources.Wallet) (*resources.WalletResponse, error) {
