@@ -16,6 +16,8 @@ import (
 const (
 	createWalletPath      = "/v1/user"
 	createCustomerPath    = "/v1/customers"
+	updateCustomerPath    = "/v1/customers/"
+	retrieveCustomerPath  = "/v1/customers/"
 	createPaymentPath     = "/v1/payments"
 	createSenderPath      = "/v1/payouts/sender"
 	createPayoutPath      = "/v1/payouts"
@@ -28,6 +30,9 @@ const (
 
 type Client interface {
 	CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error)
+	RetrieveCustomer(customerID string) (*resources.CustomerResponse, error)
+	UpdateCustomer(customerID string, data resources.Customer) (*resources.CustomerResponse, error)
+
 	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
 	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
 	GetPaymentMethodFields(method string) (*resources.PaymentMethodRequiredFieldsResponse, error)
@@ -138,6 +143,38 @@ func (c *client) CreateCustomer(data resources.Customer) (*resources.CustomerRes
 	response, err := c.PostSigned(data, createCustomerPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending create customer request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) RetrieveCustomer(customerID string) (*resources.CustomerResponse, error) {
+	response, err := c.GetSigned(retrieveCustomerPath + customerID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending retrieve customer request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) UpdateCustomer(customerID string, data resources.Customer) (*resources.CustomerResponse, error) {
+	response, err := c.PostSigned(data, updateCustomerPath+customerID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending update customer request")
 	}
 
 	var body resources.CustomerResponse
@@ -271,7 +308,7 @@ func (c *client) CreateBeneficiary(data resources.Beneficiary) (*resources.Benef
 func (c *client) GetPayoutRequiredFields(method, beneficiaryCountry, beneficiaryEntityType, payoutAmount,
 	payoutCurrency, senderCountry, senderCurrency, senderEntityType string) (*resources.PayoutRequiredFieldsResponse, error) {
 
-	reqPath := fmt.Sprintf("%s%s/details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s",getPayoutFieldsPath,method, beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
+	reqPath := fmt.Sprintf("%s%s/details?beneficiary_country=%s&beneficiary_entity_type=%s&payout_amount=%s&payout_currency=%s&sender_country=%s&sender_currency=%s&sender_entity_type=%s", getPayoutFieldsPath, method, beneficiaryCountry, beneficiaryEntityType, payoutAmount, payoutCurrency, senderCountry, senderCurrency, senderEntityType)
 
 	response, err := c.GetSigned(reqPath)
 	if err != nil {
