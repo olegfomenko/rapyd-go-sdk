@@ -16,6 +16,7 @@ import (
 const (
 	createWalletPath      = "/v1/user"
 	createCustomerPath    = "/v1/customers"
+	updateCustomerPath    = "/v1/customers/"
 	retrieveCustomerPath  = "/v1/customers/"
 	createPaymentPath     = "/v1/payments"
 	createSenderPath      = "/v1/payouts/sender"
@@ -30,6 +31,7 @@ const (
 type Client interface {
 	CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error)
 	RetrieveCustomer(customerID string) (*resources.CustomerResponse, error)
+	UpdateCustomer(customerID string, data resources.Customer) (*resources.CustomerResponse, error)
 
 	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
 	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
@@ -157,6 +159,22 @@ func (c *client) RetrieveCustomer(customerID string) (*resources.CustomerRespons
 	response, err := c.GetSigned(retrieveCustomerPath + customerID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending retrieve customer request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) UpdateCustomer(customerID string, data resources.Customer) (*resources.CustomerResponse, error) {
+	response, err := c.PostSigned(data, updateCustomerPath+customerID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending update customer request")
 	}
 
 	var body resources.CustomerResponse
