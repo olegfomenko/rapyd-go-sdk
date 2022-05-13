@@ -13,6 +13,11 @@ type Customer struct {
 	PaymentMethod        PaymentMethod `json:"payment_method"`
 }
 
+type CustomerPaymentMethod struct {
+	Address []Address `json:"address"`
+	Fields map[string]interface{} `json:"fields"`
+}
+
 type CustomerResponse struct {
 	Data Data `json:"data"`
 }

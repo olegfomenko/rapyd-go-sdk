@@ -26,6 +26,7 @@ const (
 	getPaymentMethodsPath = "/v1/payment_methods/country?country="
 	getPayoutMethodsPath  = "v1/payouts/supported_types?"
 	getPayoutFieldsPath   = "/v1/payouts/"
+	updateCustomerPaymentMethod = "/v1/customers/%s/payment_methods/"
 )
 
 type Client interface {
@@ -35,8 +36,12 @@ type Client interface {
 
 	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
 	CreatePayment(data resources.CreatePayment) (*resources.CreatePaymentResponse, error)
+
 	GetPaymentMethodFields(method string) (*resources.PaymentMethodRequiredFieldsResponse, error)
 	GetCountryPaymentMethods(country string) (*resources.CountryPaymentMethodsResponse, error)
+
+	UpdateCustomerPaymentMethod(customerID, paymentMethodID string,
+		data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
 
 	CreateSender(data resources.Sender) (*resources.SenderResponse, error)
 	CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error)
@@ -175,6 +180,22 @@ func (c *client) UpdateCustomer(customerID string, data resources.Customer) (*re
 	response, err := c.PostSigned(data, updateCustomerPath+customerID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending update customer request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) UpdateCustomerPaymentMethod(customerID, paymentMethodID string, data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error) {
+	response, err := c.PostSigned(data, fmt.Sprintf(updateCustomerPaymentMethod, customerID) + paymentMethodID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending update customer payment method request")
 	}
 
 	var body resources.CustomerResponse
