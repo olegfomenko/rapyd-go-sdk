@@ -14,19 +14,23 @@ import (
 )
 
 const (
-	createWalletPath      = "/v1/user"
-	createCustomerPath    = "/v1/customers"
-	updateCustomerPath    = "/v1/customers/"
-	retrieveCustomerPath  = "/v1/customers/"
-	createPaymentPath     = "/v1/payments"
-	createSenderPath      = "/v1/payouts/sender"
-	createPayoutPath      = "/v1/payouts"
-	createBeneficiaryPath = "/v1/payouts/beneficiary"
-	getPaymentFieldsPath  = "/v1/payment_methods/required_fields/"
-	getPaymentMethodsPath = "/v1/payment_methods/country?country="
-	getPayoutMethodsPath  = "v1/payouts/supported_types?"
-	getPayoutFieldsPath   = "/v1/payouts/"
-	updateCustomerPaymentMethod = "/v1/customers/%s/payment_methods/"
+	createWalletPath              = "/v1/user"
+	createCustomerPath            = "/v1/customers"
+	updateCustomerPath            = "/v1/customers/"
+	retrieveCustomerPath          = "/v1/customers/"
+	createPaymentPath             = "/v1/payments"
+	createSenderPath              = "/v1/payouts/sender"
+	createPayoutPath              = "/v1/payouts"
+	createBeneficiaryPath         = "/v1/payouts/beneficiary"
+	getPaymentFieldsPath          = "/v1/payment_methods/required_fields/"
+	getPaymentMethodsPath         = "/v1/payment_methods/country?country="
+	getPayoutMethodsPath          = "v1/payouts/supported_types?"
+	getPayoutFieldsPath           = "/v1/payouts/"
+	updateCustomerPaymentMethod   = "/v1/customers/%s/payment_methods/"
+	retrieveCustomerPaymentMethod = "/v1/customers/%s/payment_methods/"
+	customerPaymentMethodList     = "/v1/customers/%s/payment_methods"
+	addCustomerPaymentMethod      = "/v1/customers/%s/payment_methods"
+	deleteCustomerPaymentMethod   = "/v1/customers/%s/payment_methods/"
 )
 
 type Client interface {
@@ -42,6 +46,10 @@ type Client interface {
 
 	UpdateCustomerPaymentMethod(customerID, paymentMethodID string,
 		data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
+	AddCustomerPaymentMethod(customerID string, data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
+	RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error)
+	CustomerPaymentMethodsList(customerID string) (*resources.CustomerResponse, error)
+	DeleteCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error)
 
 	CreateSender(data resources.Sender) (*resources.SenderResponse, error)
 	CreateBeneficiary(data resources.Beneficiary) (*resources.BeneficiaryResponse, error)
@@ -56,6 +64,7 @@ type Client interface {
 	Resolve(path string) string
 	GetSigned(path string) ([]byte, error)
 	PostSigned(data interface{}, path string) ([]byte, error)
+	DeleteSigned(path string) ([]byte, error)
 }
 
 type client struct {
@@ -111,6 +120,28 @@ func (c *client) PostSigned(data interface{}, path string) ([]byte, error) {
 	request, err := http.NewRequest("POST", c.Resolve(path), bytes.NewBuffer(body))
 
 	err = c.signRequest(request, body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error signing request")
+	}
+
+	r, err := c.Do(request)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending request")
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != http.StatusOK {
+		errorResponse, _ := ioutil.ReadAll(r.Body)
+		return nil, errors.Errorf("error: got status code %d, response %s", r.StatusCode, string(errorResponse))
+	}
+
+	return ioutil.ReadAll(r.Body)
+}
+
+func (c *client) DeleteSigned(path string) ([]byte, error) {
+	request, err := http.NewRequest("DELETE", c.Resolve(path), nil)
+
+	err = c.signRequest(request, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error signing request")
 	}
@@ -193,9 +224,73 @@ func (c *client) UpdateCustomer(customerID string, data resources.Customer) (*re
 }
 
 func (c *client) UpdateCustomerPaymentMethod(customerID, paymentMethodID string, data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error) {
-	response, err := c.PostSigned(data, fmt.Sprintf(updateCustomerPaymentMethod, customerID) + paymentMethodID)
+	response, err := c.PostSigned(data, fmt.Sprintf(updateCustomerPaymentMethod, customerID)+paymentMethodID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending update customer payment method request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) CustomerPaymentMethodsList(customerID string) (*resources.CustomerResponse, error) {
+	response, err := c.GetSigned(fmt.Sprintf(customerPaymentMethodList, customerID))
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending customer payment method list request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) AddCustomerPaymentMethod(customerID string, data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error) {
+	response, err := c.PostSigned(data, fmt.Sprintf(addCustomerPaymentMethod, customerID))
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending add customer payment method request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error) {
+	response, err := c.GetSigned(fmt.Sprintf(retrieveCustomerPaymentMethod, customerID) + paymentMethodID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending retrieve customer payment method request")
+	}
+
+	var body resources.CustomerResponse
+
+	err = json.Unmarshal(response, &body)
+	if err != nil {
+		return nil, errors.Wrap(err, "error unmarshalling response")
+	}
+
+	return &body, nil
+}
+
+func (c *client) DeleteCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error) {
+	response, err := c.DeleteSigned(fmt.Sprintf(deleteCustomerPaymentMethod, customerID) + paymentMethodID)
+	if err != nil {
+		return nil, errors.Wrap(err, "error sending delete customer payment method request")
 	}
 
 	var body resources.CustomerResponse
