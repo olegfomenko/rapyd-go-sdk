@@ -14,10 +14,11 @@ type Customer struct {
 }
 
 type CustomerPaymentMethod struct {
-	ID      string                 `json:"id"`
-	Type    string                 `json:"type,omitempty"`
-	Address []Address              `json:"address"`
-	Fields  map[string]interface{} `json:"fields"`
+	ID       string                 `json:"id"`
+	Type     string                 `json:"type,omitempty"`
+	Address  []Address              `json:"address"`
+	Category string                 `json:"category"`
+	Fields   map[string]interface{} `json:"fields"`
 }
 
 type CustomerResponse struct {
