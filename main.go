@@ -48,7 +48,7 @@ type Client interface {
 		data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
 	AddCustomerPaymentMethod(customerID string, data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
 	RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error)
-	CustomerPaymentMethodsList(customerID string) (*resources.CustomerResponse, error)
+	CustomerPaymentMethodsList(customerID string) (*resources.CustomerPaymentMethodListResponse, error)
 	DeleteCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error)
 
 	CreateSender(data resources.Sender) (*resources.SenderResponse, error)
