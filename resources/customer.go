@@ -14,6 +14,7 @@ type Customer struct {
 }
 
 type CustomerPaymentMethod struct {
+	ID      string                 `json:"id"`
 	Type    string                 `json:"type,omitempty"`
 	Address []Address              `json:"address"`
 	Fields  map[string]interface{} `json:"fields"`
@@ -21,4 +22,8 @@ type CustomerPaymentMethod struct {
 
 type CustomerResponse struct {
 	Data Data `json:"data"`
+}
+
+type CustomerPaymentMethodListResponse struct {
+	Data []CustomerPaymentMethod `json:"data"`
 }

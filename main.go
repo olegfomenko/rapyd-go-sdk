@@ -239,13 +239,13 @@ func (c *client) UpdateCustomerPaymentMethod(customerID, paymentMethodID string,
 	return &body, nil
 }
 
-func (c *client) CustomerPaymentMethodsList(customerID string) (*resources.CustomerResponse, error) {
+func (c *client) CustomerPaymentMethodsList(customerID string) (*resources.CustomerPaymentMethodListResponse, error) {
 	response, err := c.GetSigned(fmt.Sprintf(customerPaymentMethodList, customerID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending customer payment method list request")
 	}
 
-	var body resources.CustomerResponse
+	var body resources.CustomerPaymentMethodListResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
