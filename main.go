@@ -47,7 +47,7 @@ type Client interface {
 	UpdateCustomerPaymentMethod(customerID, paymentMethodID string,
 		data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
 	AddCustomerPaymentMethod(customerID string, data resources.CustomerPaymentMethod) (*resources.CustomerResponse, error)
-	RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerPaymentMethod, error)
+	RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.RetrieveCustomerMethod, error)
 	CustomerPaymentMethodsList(customerID string) (*resources.CustomerPaymentMethodListResponse, error)
 	DeleteCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerResponse, error)
 
@@ -271,13 +271,13 @@ func (c *client) AddCustomerPaymentMethod(customerID string, data resources.Cust
 	return &body, nil
 }
 
-func (c *client) RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.CustomerPaymentMethod, error) {
+func (c *client) RetrieveCustomerPaymentMethod(customerID, paymentMethodID string) (*resources.RetrieveCustomerMethod, error) {
 	response, err := c.GetSigned(fmt.Sprintf(retrieveCustomerPaymentMethod, customerID) + paymentMethodID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending retrieve customer payment method request")
 	}
 
-	var body resources.CustomerPaymentMethod
+	var body resources.RetrieveCustomerMethod
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
