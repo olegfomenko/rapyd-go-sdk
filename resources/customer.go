@@ -25,6 +25,19 @@ type RetrieveCustomerMethod struct {
 	Data CustomerPaymentMethod `json:"data"`
 }
 
+type RetrieveCustomerMethods struct {
+	Data []CustomerPaymentMethod `json:"data"`
+}
+
+type RetrieveCustomer struct {
+	DefaultPaymentMethod string                  `json:"default_payment_method"`
+	PaymentMethods       RetrieveCustomerMethods `json:"payment_methods"`
+}
+
+type RetrieveCustomerResponse struct {
+	Data RetrieveCustomer `json:"data"`
+}
+
 type CustomerResponse struct {
 	Data Data `json:"data"`
 }

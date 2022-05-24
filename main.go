@@ -35,7 +35,7 @@ const (
 
 type Client interface {
 	CreateCustomer(data resources.Customer) (*resources.CustomerResponse, error)
-	RetrieveCustomer(customerID string) (*resources.CustomerResponse, error)
+	RetrieveCustomer(customerID string) (*resources.RetrieveCustomerResponse, error)
 	UpdateCustomer(customerID string, data resources.Customer) (*resources.CustomerResponse, error)
 
 	CreateWallet(data resources.Wallet) (*resources.WalletResponse, error)
@@ -191,13 +191,13 @@ func (c *client) CreateCustomer(data resources.Customer) (*resources.CustomerRes
 	return &body, nil
 }
 
-func (c *client) RetrieveCustomer(customerID string) (*resources.CustomerResponse, error) {
+func (c *client) RetrieveCustomer(customerID string) (*resources.RetrieveCustomerResponse, error) {
 	response, err := c.GetSigned(retrieveCustomerPath + customerID)
 	if err != nil {
 		return nil, errors.Wrap(err, "error sending retrieve customer request")
 	}
 
-	var body resources.CustomerResponse
+	var body resources.RetrieveCustomerResponse
 
 	err = json.Unmarshal(response, &body)
 	if err != nil {
